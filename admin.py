@@ -1,5 +1,5 @@
-# Name:  
-# Student Number:  
+# Name:
+# Student Number:
 
 # This file is provided to you as a starting point for the "admin.py" program of Assignment 2
 # of CSP1150/CSP5110 in Semester 2, 2018.  It aims to give you just enough code to help ensure
@@ -15,13 +15,11 @@
 import json
 
 
-
 # This function repeatedly prompts for input until an integer is entered.
 # See Point 1 of the "Functions in admin.py" section of the assignment brief.
 # CSP5110 Requirement: Also enforce a minimum value of 1.  See assignment brief.
 def inputInt(prompt):
     pass
-
 
 
 # This function repeatedly prompts for input until something other than whitespace is entered.
@@ -30,20 +28,16 @@ def inputSomething(prompt):
     pass
 
 
-
 # This function opens "data.txt" in write mode and writes the data to it in JSON format.
 # See Point 3 of the "Functions in admin.py" section of the assignment brief.
 def saveData(dataList):
     pass
 
 
-
-
 # Here is where you attempt to open data.txt and read the data into a "data" variable.
 # If the file does not exist or does not contain JSON data, set "data" to an empty list instead.
 # This is the only time that the program should need to read anything from the file.
 # See Point 1 of the "Requirements of admin.py" section of the assignment brief.
-
 
 
 
@@ -55,48 +49,36 @@ print('Welcome to the Game Finder Admin Program.')
 while True:
     print('Choose [a]dd, [l]ist, [s]earch, [v]iew, [d]elete or [q]uit.')
     choice = input('> ').lower()
-        
+
     if choice == 'a':
         # Add a new game.
         # See Point 3 of the "Details of admin.py" section of the assignment brief.
         pass
 
-
-    
     elif choice == 'l':
         # List the current games.
         # See Point 4 of the "Details of admin.py" section of the assignment brief.
         pass
-
-
 
     elif choice == 's':
         # Search the current games.
         # See Point 5 of the "Details of admin.py" section of the assignment brief.
         pass
 
-
-
     elif choice == 'v':
         # View a game.
         # See Point 6 of the "Details of admin.py" section of the assignment brief.
         pass
-
-        
 
     elif choice == 'd':
         # Delete a game.
         # See Point 7 of the "Details of admin.py" section of the assignment brief.
         pass
 
-        
-
     elif choice == 'q':
         # Quit the program.
         # See Point 8 of the "Details of admin.py" section of the assignment brief.
         pass
-
-
 
     else:
         # Print "invalid choice" message.

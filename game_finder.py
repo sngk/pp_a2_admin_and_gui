@@ -1,5 +1,5 @@
-# Name:  
-# Student Number:  
+# Name:
+# Student Number:
 
 # This file is provided to you as a starting point for the "game_finder.py" program of Assignment 2
 # of CSP1150/CSP5110 in Semester 2, 2018.  It aims to give you just enough code to help ensure
@@ -22,16 +22,13 @@ class ProgramGUI:
     def __init__(self):
         # This is the constructor of the class.
         # It is responsible for loading and reading the data from the text file and creating the user interface.
-        # See the "Constructor of the GUI Class of game_finder.py" section of the assignment brief. 
+        # See the "Constructor of the GUI Class of game_finder.py" section of the assignment brief.
         pass
-
-
 
     def findGames(self):
         # This method finds and displays games matching the criteria entered by the user.
         # See the "The findGames() Method of the GUI Class of game_finder.py" section of the assignment brief.
         pass
-
 
 
 
