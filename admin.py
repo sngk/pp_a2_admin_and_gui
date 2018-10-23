@@ -74,9 +74,9 @@ except ValueError:
 
 while True:
     print('Choose [a]dd, [l]ist, [s]earch, [v]iew, [d]elete, [b]reakdown or [q]uit.')
-    choice = input('> ').lower()
+    choice = list(map(str, input('> ').lower().split()))
 
-    if choice == 'a':
+    if choice[0] == 'a':
         # Add a new game.
         gameName = inputSomething('Enter the game name > ').lower()
         for counter, name in enumerate(data):
@@ -96,7 +96,7 @@ while True:
                 print('Game added.')
                 break
 
-    elif choice == 'l':
+    elif choice[0] == 'l':
         # List the current games.
         if not data:
             print('No Games Saved!')
@@ -106,50 +106,88 @@ while True:
                 name = data[counter]['name']
                 print ('Index: {}; Game name: {}'.format(counter, name))
 
-    elif choice == 's':
+    elif choice[0] == 's':
         # Search the current games.
         if not data:
             print('No Games Saved!')
         else:
-            gameName = inputSomething('Enter the name of the game you would like to look for > ').lower()
-            print('Searching results: ')
-            for counter, name in enumerate(data):
-                name = data[counter]['name'].lower()
-                if gameName in name:
-                    print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
-                else:
+            if len(choice) == 1:
+                gameName = inputSomething('Enter the name of the game you would like to look for > ').lower()
+                print('Searching results: ')
+                listNames = []
+                for counter, name in enumerate(data):
+                    name = data[counter]['name'].lower()
+                    listNames.append(name)
+                    if gameName in name:
+                        print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
+                if not any(gameName in s for s in listNames):
                     print ('No games found.')
-                    break
+            else:
+                gameName = choice[1]
+                print('Searching results: ')
+                listNames = []
+                for counter, name in enumerate(data):
+                    name = data[counter]['name'].lower()
+                    listNames.append(name)
+                    if gameName in name:
+                        print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
+                if not any(gameName in s for s in listNames):
+                    print('No games found.')
 
-    elif choice == 'v':
+    elif choice[0] == 'v':
         # View a game.
         if not data:
             print('No Games Saved!')
         else:
-            value = inputInt('Game number (index) to view > ', minValue=0)
-            try:
-                if data[value]:
-                    print(data[value]['name'])
-                    print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
-                    print('\tDuration: {} minutes'.format(data[value]['duration']))
-                    print('\tMinumum Age: {}'.format(data[value]['min_age']))
-            except IndexError:
-                print('Invalid index number.')
+            if len(choice) == 1:
+                value = inputInt('Game number (index) to view > ', minValue=0)
+                try:
+                    if data[value]:
+                        print(data[value]['name'])
+                        print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
+                        print('\tDuration: {} minutes'.format(data[value]['duration']))
+                        print('\tMinumum Age: {}'.format(data[value]['min_age']))
+                except IndexError:
+                    print('Invalid index number.')
+            else:
+                try:
+                    value = int(choice[1])
+                except ValueError:
+                    print('invalid input - try agian.')
+                    break
 
-    elif choice == 'd':
+                try:
+                    if data[value]:
+                        print(data[value]['name'])
+                        print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
+                        print('\tDuration: {} minutes'.format(data[value]['duration']))
+                        print('\tMinumum Age: {}'.format(data[value]['min_age']))
+                except IndexError:
+                    print('Invalid index number.')
+
+    elif choice[0] == 'd':
         # Delete a game.
         if not data:
             print('No Games Saved!')
         else:
-            value = inputInt('Game number (index) to delete > ', minValue=0)
-            try:
-                data.remove(data[value])
-                saveData(data)
-                print('Game Deleted!')
-            except IndexError:
-                print('Invalid index number.')
+            if len(choice) == 1:
+                value = inputInt('Game number (index) to delete > ', minValue=0)
+                try:
+                    data.remove(data[value])
+                    saveData(data)
+                    print('Game Deleted!')
+                except IndexError:
+                    print('Invalid index number.')
+            else:
+                value = int(choice[1])
+                try:
+                    data.remove(data[value])
+                    saveData(data)
+                    print('Game Deleted!')
+                except IndexError:
+                    print('Invalid index number.')
 
-    elif choice == 'b':
+    elif choice[0] == 'b':
         if not data:
             print('No Games Saved!')
         else:
@@ -171,7 +209,7 @@ while True:
             print('Minimum players across all games: ', minNumOfPlayers)
             print('Average duration across all gmaes: %.2f' % float(totalDuration / len(data)))
             print('Average min Age across all games: %.2f' % float(totalAge / len(data)))
-    elif choice == 'q':
+    elif choice[0] == 'q':
         # Quit the program.
         print('Goodbye!')
         break

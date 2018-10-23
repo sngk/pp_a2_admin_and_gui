@@ -1,5 +1,5 @@
-# Name:
-# Student Number:
+# Name: Andrew Udodov
+# Student Number: 10472552
 
 # This file is provided to you as a starting point for the "game_finder.py" program of Assignment 2
 # of CSP1150/CSP5110 in Semester 2, 2018.  It aims to give you just enough code to help ensure
