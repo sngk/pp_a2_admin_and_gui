@@ -1,10 +1,5 @@
-# Name:
-# Student Number:
-
-# This file is provided to you as a starting point for the "admin.py" program of Assignment 2
-# of CSP1150/CSP5110 in Semester 2, 2018.  It aims to give you just enough code to help ensure
-# that your program is well structured.  Please use this file as the basis for your assignment work.
-# You are not required to reference it.
+# Name: Andrew Udodov
+# Student Number: 10472552
 
 
 # The "pass" command tells Python to "do nothing".  It is simply a placeholder to ensure that the starter files run smoothly.
@@ -18,21 +13,42 @@ import json
 # This function repeatedly prompts for input until an integer is entered.
 # See Point 1 of the "Functions in admin.py" section of the assignment brief.
 # CSP5110 Requirement: Also enforce a minimum value of 1.  See assignment brief.
-def inputInt(prompt):
-    pass
+def inputInt(prompt, errorMessage='Invalid input - Try again.', minValue=None, maxValue=None):
+    while True:
+        value = input(prompt)
+        try:
+            numResponse = int(value)
+        except ValueError:
+            print(errorMessage)
+            continue
+        if minValue is not None and numResponse < minValue:
+            print('Minimum of', minValue, 'permitted.')
+            continue
+        if maxValue is not None and numResponse > maxValue:
+            print('Maximum of', maxValue, 'permitted.')
+            continue
+        return numResponse
 
 
 # This function repeatedly prompts for input until something other than whitespace is entered.
 # See Point 2 of the "Functions in admin.py" section of the assignment brief.
 def inputSomething(prompt):
-    pass
-
+    while True:
+        value = input(prompt).strip()
+        if value == '':
+            print('Can not be empty - Please enter something.')
+            continue
+        else:
+            return value
 
 # This function opens "data.txt" in write mode and writes the data to it in JSON format.
 # See Point 3 of the "Functions in admin.py" section of the assignment brief.
-def saveData(dataList):
-    pass
 
+
+def saveData(dataList):
+    with open('data.txt', 'w') as file:
+        json.dump(dataList, file, indent=4, ensure_ascii=False)
+    file.close()
 
 # Here is where you attempt to open data.txt and read the data into a "data" variable.
 # If the file does not exist or does not contain JSON data, set "data" to an empty list instead.
@@ -40,47 +56,127 @@ def saveData(dataList):
 # See Point 1 of the "Requirements of admin.py" section of the assignment brief.
 
 
-
 # Print welcome message, then enter the endless loop which prompts the user for a choice.
 # See Point 2 of the "Details of admin.py" section of the assignment brief.
 # The rest is up to you.
 print('Welcome to the Game Finder Admin Program.')
+try:
+    with open('data.txt') as file:
+        data = json.load(file)
+
+except IOError:
+    print('No such file or directory.')
+    data = []
+    pass
+except ValueError:
+    data = []
+    pass
 
 while True:
-    print('Choose [a]dd, [l]ist, [s]earch, [v]iew, [d]elete or [q]uit.')
+    print('Choose [a]dd, [l]ist, [s]earch, [v]iew, [d]elete, [b]reakdown or [q]uit.')
     choice = input('> ').lower()
 
     if choice == 'a':
         # Add a new game.
-        # See Point 3 of the "Details of admin.py" section of the assignment brief.
-        pass
+        gameName = inputSomething('Enter the game name > ').lower()
+        for counter, name in enumerate(data):
+            name = data[counter]['name'].lower()
+            if gameName == name:
+                print('The game already exists.')
+                print('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
+                break
+            else:
+                minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
+                maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
+                duration = inputInt('Enter the duration of the game > ', minValue=1)
+                minAge = inputInt('Enter the minimum age > ', minValue=1, maxValue=120)
+                dictionary = {'name': gameName, 'min_players': minPlayers, 'max_players': maxPlayers, 'duration': duration, 'min_age': minAge}
+                data.append(dictionary)
+                saveData(data)
+                print('Game added.')
+                break
 
     elif choice == 'l':
         # List the current games.
-        # See Point 4 of the "Details of admin.py" section of the assignment brief.
-        pass
+        if not data:
+            print('No Games Saved!')
+        else:
+            print('List of Saved Games: ')
+            for counter, name in enumerate(data):
+                name = data[counter]['name']
+                print ('Index: {}; Game name: {}'.format(counter, name))
 
     elif choice == 's':
         # Search the current games.
-        # See Point 5 of the "Details of admin.py" section of the assignment brief.
-        pass
+        if not data:
+            print('No Games Saved!')
+        else:
+            gameName = inputSomething('Enter the name of the game you would like to look for > ').lower()
+            print('Searching results: ')
+            for counter, name in enumerate(data):
+                name = data[counter]['name'].lower()
+                if gameName in name:
+                    print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
+                else:
+                    print ('No games found.')
+                    break
 
     elif choice == 'v':
         # View a game.
-        # See Point 6 of the "Details of admin.py" section of the assignment brief.
-        pass
+        if not data:
+            print('No Games Saved!')
+        else:
+            value = inputInt('Game number (index) to view > ', minValue=0)
+            try:
+                if data[value]:
+                    print(data[value]['name'])
+                    print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
+                    print('\tDuration: {} minutes'.format(data[value]['duration']))
+                    print('\tMinumum Age: {}'.format(data[value]['min_age']))
+            except IndexError:
+                print('Invalid index number.')
 
     elif choice == 'd':
         # Delete a game.
-        # See Point 7 of the "Details of admin.py" section of the assignment brief.
-        pass
+        if not data:
+            print('No Games Saved!')
+        else:
+            value = inputInt('Game number (index) to delete > ', minValue=0)
+            try:
+                data.remove(data[value])
+                saveData(data)
+                print('Game Deleted!')
+            except IndexError:
+                print('Invalid index number.')
 
+    elif choice == 'b':
+        if not data:
+            print('No Games Saved!')
+        else:
+            totalDuration = 0
+            totalAge = 0
+            maxNumOfPlayers = 0
+            minNumOfPlayers = data[0]['min_players']
+            for counter in range(len(data)):
+                maximum = data[counter]['max_players']
+                minimum = data[counter]['min_players']
+                totalDuration += data[counter]['duration']
+                totalAge += data[counter]['min_age']
+                if minimum < minNumOfPlayers:
+                    minNumOfPlayers = minimum
+                if maximum > maxNumOfPlayers:
+                    maxNumOfPlayers = maximum
+            print('Total number of games: ', len(data))
+            print('Maximum players across all games: ', maxNumOfPlayers)
+            print('Minimum players across all games: ', minNumOfPlayers)
+            print('Average duration across all gmaes: %.2f' % float(totalDuration / len(data)))
+            print('Average min Age across all games: %.2f' % float(totalAge / len(data)))
     elif choice == 'q':
         # Quit the program.
-        # See Point 8 of the "Details of admin.py" section of the assignment brief.
-        pass
+        print('Goodbye!')
+        break
 
     else:
         # Print "invalid choice" message.
-        # See Point 9 of the "Details of admin.py" section of the assignment brief.
+        print('Invalid choice!')
         pass
