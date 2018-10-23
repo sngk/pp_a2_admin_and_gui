@@ -11,8 +11,6 @@ import json
 
 
 # This function repeatedly prompts for input until an integer is entered.
-# See Point 1 of the "Functions in admin.py" section of the assignment brief.
-# CSP5110 Requirement: Also enforce a minimum value of 1.  See assignment brief.
 def inputInt(prompt, errorMessage='Invalid input - Try again.', minValue=None, maxValue=None):
     while True:
         value = input(prompt)
@@ -78,23 +76,33 @@ while True:
 
     if choice[0] == 'a':
         # Add a new game.
-        gameName = inputSomething('Enter the game name > ').lower()
-        for counter, name in enumerate(data):
-            name = data[counter]['name'].lower()
-            if gameName == name:
-                print('The game already exists.')
-                print('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
-                break
-            else:
-                minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
-                maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
-                duration = inputInt('Enter the duration of the game > ', minValue=1)
-                minAge = inputInt('Enter the minimum age > ', minValue=1, maxValue=120)
-                dictionary = {'name': gameName, 'min_players': minPlayers, 'max_players': maxPlayers, 'duration': duration, 'min_age': minAge}
-                data.append(dictionary)
-                saveData(data)
-                print('Game added.')
-                break
+        gameName = inputSomething('Enter the game name > ')
+        if not data:
+            minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
+            maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
+            duration = inputInt('Enter the duration of the game > ', minValue=1)
+            minAge = inputInt('Enter the minimum age > ', minValue=1, maxValue=120)
+            dictionary = {'name': gameName, 'min_players': minPlayers, 'max_players': maxPlayers, 'duration': duration, 'min_age': minAge}
+            data.append(dictionary)
+            saveData(data)
+            print('Game added.')
+        else:
+            for counter, name in enumerate(data):
+                name = data[counter]['name'].lower()
+                if gameName.lower() == name:
+                    print('The game already exists.')
+                    print('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
+                    break
+                else:
+                    minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
+                    maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
+                    duration = inputInt('Enter the duration of the game > ', minValue=1)
+                    minAge = inputInt('Enter the minimum age > ', minValue=1, maxValue=120)
+                    dictionary = {'name': gameName, 'min_players': minPlayers, 'max_players': maxPlayers, 'duration': duration, 'min_age': minAge}
+                    data.append(dictionary)
+                    saveData(data)
+                    print('Game added.')
+                    break
 
     elif choice[0] == 'l':
         # List the current games.
@@ -205,10 +213,10 @@ while True:
                 if maximum > maxNumOfPlayers:
                     maxNumOfPlayers = maximum
             print('Total number of games: ', len(data))
-            print('Maximum players across all games: ', maxNumOfPlayers)
-            print('Minimum players across all games: ', minNumOfPlayers)
-            print('Average duration across all gmaes: %.2f' % float(totalDuration / len(data)))
-            print('Average min Age across all games: %.2f' % float(totalAge / len(data)))
+            print('Maximum players across all games: {} '.format(maxNumOfPlayers))
+            print('Minimum players across all games: {} '.format(minNumOfPlayers))
+            print('Average duration across all gmaes: {0:.2f}'.format(float(totalDuration / len(data))))
+            print('Average min Age across all games: {0:.2f}'.format(float(totalAge / len(data))))
     elif choice[0] == 'q':
         # Quit the program.
         print('Goodbye!')
