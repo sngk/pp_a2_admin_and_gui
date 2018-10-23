@@ -131,7 +131,7 @@ while True:
                     listNames.append(name)
                     if gameName in name:
                         print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
-                if not any(gameName in s for s in listNames):
+                if not any(gameName in gameNames for gameNames in listNames):
                     print('No games found.')
 
     elif choice[0] == 'v':
