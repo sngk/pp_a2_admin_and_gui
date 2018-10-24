@@ -1,16 +1,6 @@
 # Name: Andrew Udodov
 # Student Number: 10472552
 
-# This file is provided to you as a starting point for the "game_finder.py" program of Assignment 2
-# of CSP1150/CSP5110 in Semester 2, 2018.  It aims to give you just enough code to help ensure
-# that your program is well structured.  Please use this file as the basis for your assignment work.
-# You are not required to reference it.
-
-
-# The "pass" command tells Python to "do nothing".  It is simply a placeholder to ensure that the starter files run smoothly.
-# They are not needed in your completed program.  Replace them with your own code as you complete the assignment.
-
-
 # Import the required modules.
 import tkinter
 import tkinter.messagebox
@@ -56,32 +46,49 @@ class ProgramGUI:
         tkinter.Entry(self.main, textvariable=self.timeAvail, width=10).grid(row=2, column=1)
         tkinter.Entry(self.main, textvariable=self.youngestAge, width=10).grid(row=3, column=1)
 
-        self.submitButton = tkinter.Button(self.main, text='Submit', command=self.greet)
+        self.submitButton = tkinter.Button(self.main, text='Submit', command=self.findGames)
         self.submitButton.grid(row=4, columnspan=3)
 
-        # self.criteriaLabel = tkinter.StringVar()
-
         tkinter.Label(self.main, text='Matching Games: ').grid(row=6, columnspan=3)
-        self.criteriaLabel = tkinter.Label(self.main, text='No criteria submitted.', justify='center')
-        self.criteriaLabel.grid(row=7, columnspan=3)
+        self.criteriaLabel = tkinter.Label(self.main, justify='center')
+        self.criteriaLabel.grid(row=8, columnspan=3)
+        self.matchingLabel = tkinter.Label(self.main, text ='No criteria submitted.', justify='center')
+        self.matchingLabel.grid(row=7, columnspan=3)
         tkinter.Button(self.main, text='Quit', command=self.greet).grid(row=10, columnspan=3)
 
         tkinter.mainloop()
 
     def greet(self):
         print("Greetings!")
-        self.criteriaLabel.config(text='Hello :D')
-        if len(self.youngestAge.get() + self.playersNum.get() + self.timeAvail.get()) == 0:
-            tkinter.messagebox.showerror('Error!', 'enter data')
-        else:
-            # text = self.data[0]
-            # self.criteriaLabel.config(text)
-        pass
-
+   
     def findGames(self):
         # This method finds and displays games matching the criteria entered by the user.
-        # See the "The findGames() Method of the GUI Class of game_finder.py" section of the assignment brief.
-        pass
+        try:
+        	youngestAge = int(self.youngestAge.get())
+        	timeAvail = int(self.timeAvail.get())
+        	playersNum = int(self.playersNum.get())
+        	gameList = []
+        	for counter, game in enumerate(self.data):
+        		if self.data[counter]['min_players'] <= playersNum <= self.data[counter]['max_players']:
+        			if timeAvail <= self.data[counter]['duration']:
+        				if youngestAge >= self.data[counter]['min_age']:
+        					game = self.data[counter]['name']
+        					gameList.append(game)
+        					
+        				else:
+        					self.criteriaLabel.config(text='No matching games')
+        			else:
+        				self.criteriaLabel.config(text='No matching games')
+        		else:
+        			self.criteriaLabel.config(text='No matching games')
+        	text = '{} out of {} matched the search:'.format(len(gameList), len(self.data))
+        	self.matchingLabel.config(text=text)
+        	self.criteriaLabel.config(text='\n'.join(gameList))
+        except ValueError:
+        	tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
+        except IndexError:
+        	tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
+        # pass
 
 
 # Create an object of the ProgramGUI class to begin the program.

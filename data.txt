@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Risk!",
+        "min_players": 2,
+        "max_players": 4,
+        "duration": 120,
+        "min_age": 11
+    },
+    {
+        "name": "The Settlers of Catan",
+        "min_players": 3,
+        "max_players": 4,
+        "duration": 90,
+        "min_age": 10
+    },
+    {
+        "name": "Monopoly",
+        "min_players": 2,
+        "max_players": 8,
+        "duration": 9999,
+        "min_age": 8
+    }
+]
