@@ -99,9 +99,8 @@ while True:
             print('No Games Saved!')
         else:
             print('List of Saved Games: ')
-            for counter, name in enumerate(data):
-                name = data[counter]['name'].lower()
-                print ('Index: {}; Game name: {}'.format(counter, name))
+            for counter, game in enumerate(data):
+                print ('Index: {}; Game name: {}'.format(counter, game['name']))
 
     elif choice[0] == 's':
         # Search the current games.
@@ -111,9 +110,8 @@ while True:
             if len(choice) == 1:
                 gameName = inputSomething('Enter the name of the game you would like to look for > ').lower()
             else:
-                gameName = choice[1]
+                gameName = ' '.join(choice[1:]).strip().lower()
             print('Searching results: ')
-            listNames = []
             noMatches = True
             for counter, game in enumerate(data):
                 name = game['name'].lower()
