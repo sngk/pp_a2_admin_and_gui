@@ -62,7 +62,6 @@ try:
         data = json.load(file)
 
 except IOError:
-    print('No such file or directory.')
     data = []
 except ValueError:
     data = []
@@ -73,16 +72,15 @@ while True:
 
     if choice[0] == 'a':
         # Add a new game.
-        gameName = inputSomething('Enter the game name > ').lower()
+        gameName = inputSomething('Enter the game name > ')
         nameList = []
-        indexList = []
         for counter, game in enumerate(data):
             name = game['name'].lower()
             nameList.append(name)
-        if gameName in nameList:
-            counter = nameList(gameName)
+        if gameName.lower() in nameList:
+            index = nameList.index(gameName.lower())
             print('The game already exists.')
-            # print('Index: {}; Game name: {}'.format(counter, gameName))
+            print('Index: {}; Game name: {}'.format(index, data[index]['name']))
         else:
             minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
             maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
