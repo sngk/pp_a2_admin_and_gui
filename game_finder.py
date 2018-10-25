@@ -52,7 +52,7 @@ class ProgramGUI:
         tkinter.Label(self.main, text='Matching Games: ').grid(row=6, columnspan=3)
         self.criteriaLabel = tkinter.Label(self.main, justify='center')
         self.criteriaLabel.grid(row=8, columnspan=3)
-        self.matchingLabel = tkinter.Label(self.main, text ='No criteria submitted.', justify='center')
+        self.matchingLabel = tkinter.Label(self.main, text='No criteria submitted.', justify='center')
         self.matchingLabel.grid(row=7, columnspan=3)
         tkinter.Button(self.main, text='Quit', command=self.greet).grid(row=10, columnspan=3)
 
@@ -60,35 +60,30 @@ class ProgramGUI:
 
     def greet(self):
         print("Greetings!")
-   
+
     def findGames(self):
         # This method finds and displays games matching the criteria entered by the user.
         try:
-        	youngestAge = int(self.youngestAge.get())
-        	timeAvail = int(self.timeAvail.get())
-        	playersNum = int(self.playersNum.get())
-        	gameList = []
-        	for counter, game in enumerate(self.data):
-        		if self.data[counter]['min_players'] <= playersNum <= self.data[counter]['max_players']:
-        			if timeAvail <= self.data[counter]['duration']:
-        				if youngestAge >= self.data[counter]['min_age']:
-        					game = self.data[counter]['name']
-        					gameList.append(game)
-        					
-        				else:
-        					self.criteriaLabel.config(text='No matching games')
-        			else:
-        				self.criteriaLabel.config(text='No matching games')
-        		else:
-        			self.criteriaLabel.config(text='No matching games')
-        	text = '{} out of {} matched the search:'.format(len(gameList), len(self.data))
-        	self.matchingLabel.config(text=text)
-        	self.criteriaLabel.config(text='\n'.join(gameList))
+            youngestAge = int(self.youngestAge.get())
+            timeAvail = int(self.timeAvail.get())
+            playersNum = int(self.playersNum.get())
+            gameList = []
+            noMatches = True
+            for counter, game in enumerate(self.data):
+                if (game['min_players'] <= playersNum <= game['max_players']) and (timeAvail >= game['duration']) and (youngestAge >= game['min_age']):
+                    gameName = self.data[counter]['name']
+                    gameList.append(gameName)
+                    noMatches = False
+            text = '{} out of {} games matched the search:'.format(len(gameList), len(self.data))
+            self.matchingLabel.config(text=text)
+            if noMatches:
+                self.criteriaLabel.config(text='No matching games found.')
+            else:
+                self.criteriaLabel.config(text='\n'.join(gameList))
         except ValueError:
-        	tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
+            tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
         except IndexError:
-        	tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
-        # pass
+            tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
 
 
 # Create an object of the ProgramGUI class to begin the program.
