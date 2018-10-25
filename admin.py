@@ -46,7 +46,6 @@ def inputSomething(prompt):
 def saveData(dataList):
     with open('data.txt', 'w') as file:
         json.dump(dataList, file, indent=4, ensure_ascii=False)
-    file.close()
 
 # Here is where you attempt to open data.txt and read the data into a "data" variable.
 # If the file does not exist or does not contain JSON data, set "data" to an empty list instead.
@@ -65,19 +64,26 @@ try:
 except IOError:
     print('No such file or directory.')
     data = []
-    pass
 except ValueError:
     data = []
-    pass
 
 while True:
     print('Choose [a]dd, [l]ist, [s]earch, [v]iew, [d]elete, [b]reakdown or [q]uit.')
-    choice = list(map(str, input('> ').lower().split()))
+    choice = input('> ').lower().split()
 
     if choice[0] == 'a':
         # Add a new game.
-        gameName = inputSomething('Enter the game name > ')
-        if not data:
+        gameName = inputSomething('Enter the game name > ').lower()
+        nameList = []
+        indexList = []
+        for counter, game in enumerate(data):
+            name = game['name'].lower()
+            nameList.append(name)
+        if gameName in nameList:
+            counter = nameList(gameName)
+            print('The game already exists.')
+            # print('Index: {}; Game name: {}'.format(counter, gameName))
+        else:
             minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
             maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
             duration = inputInt('Enter the duration of the game > ', minValue=1)
@@ -86,23 +92,6 @@ while True:
             data.append(dictionary)
             saveData(data)
             print('Game added.')
-        else:
-            for counter, name in enumerate(data):
-                name = data[counter]['name'].lower()
-                if gameName.lower() == name:
-                    print('The game already exists.')
-                    print('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
-                    break
-                else:
-                    minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
-                    maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
-                    duration = inputInt('Enter the duration of the game > ', minValue=1)
-                    minAge = inputInt('Enter the minimum age > ', minValue=1, maxValue=120)
-                    dictionary = {'name': gameName, 'min_players': minPlayers, 'max_players': maxPlayers, 'duration': duration, 'min_age': minAge}
-                    data.append(dictionary)
-                    saveData(data)
-                    print('Game added.')
-                    break
 
     elif choice[0] == 'l':
         # List the current games.
@@ -111,7 +100,7 @@ while True:
         else:
             print('List of Saved Games: ')
             for counter, name in enumerate(data):
-                name = data[counter]['name']
+                name = data[counter]['name'].lower()
                 print ('Index: {}; Game name: {}'.format(counter, name))
 
     elif choice[0] == 's':
@@ -121,81 +110,58 @@ while True:
         else:
             if len(choice) == 1:
                 gameName = inputSomething('Enter the name of the game you would like to look for > ').lower()
-                print('Searching results: ')
-                listNames = []
-                for counter, name in enumerate(data):
-                    name = data[counter]['name'].lower()
-                    listNames.append(name)
-                    if gameName in name:
-                        print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
-                if not any(gameName in s for s in listNames):
-                    print ('No games found.')
             else:
                 gameName = choice[1]
-                print('Searching results: ')
-                listNames = []
-                for counter, name in enumerate(data):
-                    name = data[counter]['name'].lower()
-                    listNames.append(name)
-                    if gameName in name:
-                        print ('Index: {}; Game name: {}'.format(counter, data[counter]['name']))
-                if not any(gameName in gameNames for gameNames in listNames):
-                    print('No games found.')
+            print('Searching results: ')
+            listNames = []
+            noMatches = True
+            for counter, game in enumerate(data):
+                name = game['name'].lower()
+                if gameName in name:
+                    noMatches = False
+                    print ('Index: {}; Game name: {}'.format(counter, game['name']))
+            if noMatches:
+                print ('No games found.')
 
     elif choice[0] == 'v':
         # View a game.
         if not data:
             print('No Games Saved!')
         else:
-            if len(choice) == 1:
-                value = inputInt('Game number (index) to view > ', minValue=0)
-                try:
-                    if data[value]:
-                        print(data[value]['name'])
-                        print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
-                        print('\tDuration: {} minutes'.format(data[value]['duration']))
-                        print('\tMinumum Age: {}'.format(data[value]['min_age']))
-                except IndexError:
-                    print('Invalid index number.')
-            else:
-                try:
+            try:
+                if len(choice) == 1:
+                    value = inputInt('Game number (index) to view > ', minValue=0)
+                else:
                     value = int(choice[1])
-                except ValueError:
-                    print('invalid input - try agian.')
-                    break
-
-                try:
-                    if data[value]:
-                        print(data[value]['name'])
-                        print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
-                        print('\tDuration: {} minutes'.format(data[value]['duration']))
-                        print('\tMinumum Age: {}'.format(data[value]['min_age']))
-                except IndexError:
-                    print('Invalid index number.')
+                print(data[value]['name'])
+                print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
+                print('\tDuration: {} minutes'.format(data[value]['duration']))
+                print('\tMinumum Age: {}'.format(data[value]['min_age']))
+            except ValueError:
+                print('Invalid input - Try again. Index should be integer number.')
+            except IndexError:
+                print('Invalid index number - Out of range.')
 
     elif choice[0] == 'd':
         # Delete a game.
         if not data:
             print('No Games Saved!')
         else:
-            if len(choice) == 1:
-                value = inputInt('Game number (index) to delete > ', minValue=0)
-                try:
-                    data.remove(data[value])
-                    saveData(data)
-                    print('Game Deleted!')
-                except IndexError:
-                    print('Invalid index number.')
-            else:
-                value = int(choice[1])
-                try:
-                    data.remove(data[value])
-                    saveData(data)
-                    print('Game Deleted!')
-                except IndexError:
-                    print('Invalid index number.')
+            try:
+                if len(choice) == 1:
+                    value = inputInt('Game number (index) to delete > ', minValue=0)
+                else:
+                    value = int(choice[1])
+                del data[value]
+                saveData(data)
+                print('Game Deleted!')
+            except ValueError:
+                print('Invalid input - Try again. Index should be integer number.')
+            except IndexError:
+                print('Invalid index number - Out of range.')
 
     elif choice[0] == 'b':
+        # Display breakdown
         if not data:
             print('No Games Saved!')
         else:
@@ -217,6 +183,7 @@ while True:
             print('Minimum players across all games: {} '.format(minNumOfPlayers))
             print('Average duration across all gmaes: {0:.2f}'.format(float(totalDuration / len(data))))
             print('Average min Age across all games: {0:.2f}'.format(float(totalAge / len(data))))
+
     elif choice[0] == 'q':
         # Quit the program.
         print('Goodbye!')
@@ -225,4 +192,3 @@ while True:
     else:
         # Print "invalid choice" message.
         print('Invalid choice!')
-        pass
