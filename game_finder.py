@@ -96,10 +96,12 @@ class ProgramGUI:
                 self.btnFrame.grid_forget()
             buttonFrame = self.btnFrame = tkinter.Frame(self.main)
             buttonFrame.grid(columnspan=3)
+            nameList = []
             for btnIndex, btn in enumerate(gameList):
                 for counter, game in enumerate(self.data):
-                    if btn in game['name']:
-                        btnIndex = counter
+                    nameList.append(game['name'])
+                    if btn in nameList:
+                        btnIndex = nameList.index(btn)
                 self.buttons[btn] = tkinter.Button(buttonFrame, text=btn, command=lambda x=btnIndex: self.gameInfo(x))
                 self.buttons[btn].grid(row=8 + btnIndex, columnspan=3)
             self.btnFrame.grid()
