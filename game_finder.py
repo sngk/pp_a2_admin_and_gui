@@ -29,82 +29,75 @@ class ProgramGUI:
 
         self.main.title("Game Finder")
         self.btnFrame = None
-        # self.constraints = tkinter.Frame(self.main)
-        # self.matchingGames = tkinter.Frame(self.main)
 
         tkinter.Label(self.main, text='Constraints:').grid(columnspan=3)
 
         tkinter.Label(self.main, text='Number of players: ').grid(row=1, column=0)
         tkinter.Label(self.main, text='Time available (mins): ').grid(row=2, column=0)
         tkinter.Label(self.main, text='Age of youngest player: ').grid(row=3, column=0)
+        tkinter.Label(self.main, text='Matching Games: ').grid(row=6, columnspan=3)
+
+        self.matchingLabel = tkinter.Label(self.main, text='No criteria submitted.', justify='center')
+        self.matchingLabel.grid(row=7, columnspan=3)
 
         self.youngestAge = tkinter.StringVar()
         self.playersNum = tkinter.StringVar()
         self.timeAvail = tkinter.StringVar()
 
-        tkinter.Entry(self.main, textvariable=self.playersNum, width=10).grid(row=1, column=1)
-        tkinter.Entry(self.main, textvariable=self.timeAvail, width=10).grid(row=2, column=1)
-        tkinter.Entry(self.main, textvariable=self.youngestAge, width=10).grid(row=3, column=1)
+        tkinter.Entry(self.main, textvariable=self.playersNum, width=5).grid(row=1, column=1)
+        tkinter.Entry(self.main, textvariable=self.timeAvail, width=5).grid(row=2, column=1)
+        tkinter.Entry(self.main, textvariable=self.youngestAge, width=5).grid(row=3, column=1)
 
         self.submitButton = tkinter.Button(self.main, text='Submit', command=self.findGames)
         self.submitButton.grid(row=4, columnspan=3)
-
-        tkinter.Label(self.main, text='Matching Games: ').grid(row=6, columnspan=3)
-        self.criteriaLabel = tkinter.Label(self.main, justify='center')
-        self.criteriaLabel.grid(row=8, columnspan=3)
-        self.matchingLabel = tkinter.Label(self.main, text='No criteria submitted.', justify='center')
-        self.matchingLabel.grid(row=7, columnspan=3)
 
         tkinter.mainloop()
 
     def gameInfo(self, btnIndex):
         message = '{}\n Players: {} - {}\n Duration: {}\n Minimum Age: {}'.format(self.data[btnIndex]['name'], self.data[btnIndex]
-                                                                                  ['min_players'], self.data[btnIndex]['max_players'], self.data[btnIndex]['duration'], self.data[btnIndex]['min_age'])
-        tkinter.messagebox.showerror(self.data[btnIndex]['name'], message)
-        # for counter, game in enumerate(self.data):
-        #     if btn in game['name']:
+                                                                                  ['min_players'], self.data[btnIndex]['max_players'],
+                                                                                  self.data[btnIndex]['duration'],
+                                                                                  self.data[btnIndex]['min_age'])
+        tkinter.messagebox.showinfo(self.data[btnIndex]['name'], message)
 
     def findGames(self):
         # This method finds and displays games matching the criteria entered by the user.
         try:
+            print(self.data[0])
             youngestAge = int(self.youngestAge.get())
             timeAvail = int(self.timeAvail.get())
             playersNum = int(self.playersNum.get())
-            gameList = []
             noMatches = True
-            for counter, game in enumerate(self.data):
-                if (game['min_players'] <= playersNum <= game['max_players']) and (timeAvail >= game['duration']) and (youngestAge >= game['min_age']):
-                    gameName = game['name']
-                    gameList.append(gameName)
-                    noMatches = False
-            text = '{} out of {} games matched the search:'.format(len(gameList), len(self.data))
-            self.matchingLabel.config(text=text)
+            self.buttons = {}
+            if self.btnFrame:  # Exists?
+                self.btnFrame.grid_remove()
 
+            buttonFrame = self.btnFrame = tkinter.Frame(self.main)
+            buttonFrame.grid(columnspan=3)
+
+            for game in self.data:
+                if (game['min_players'] <= playersNum <= game['max_players']) and (timeAvail >= game['duration']) and (youngestAge >= game['min_age']):
+                    btnIndex = self.data.index(game)
+                    self.buttons[game['name']] = tkinter.Button(buttonFrame, text=game['name'],
+                                                                command=lambda x=btnIndex: self.gameInfo(x), width=25)
+                    self.buttons[game['name']].grid(row=8 + btnIndex, columnspan=3)
+                    noMatches = False
+
+            text = '{} out of {} games matched the search:'.format(len(self.buttons), len(self.data))
+            self.matchingLabel.config(text=text)
             if noMatches:
-                self.criteriaLabel.config(text='No matching games found.')
+                self.matchingLabel.config(text='No matching games found.')
 
         except ValueError:
             tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
+            if self.btnFrame:
+                self.btnFrame.grid_remove()
+                self.matchingLabel.config(text='Wrong criteria specified.')
         except IndexError:
             tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
-
-        else:
-            self.criteriaLabel.grid_remove()
-            # self.criteriaLabel.config(text='\n'.join(gameList))  # version of program without buttons for game info
-            self.buttons = {}
-            if self.btnFrame:  # Exists?
-                self.btnFrame.grid_forget()
-            buttonFrame = self.btnFrame = tkinter.Frame(self.main)
-            buttonFrame.grid(columnspan=3)
-            nameList = []
-            for btnIndex, btn in enumerate(gameList):
-                for counter, game in enumerate(self.data):
-                    nameList.append(game['name'])
-                    if btn in nameList:
-                        btnIndex = nameList.index(btn)
-                self.buttons[btn] = tkinter.Button(buttonFrame, text=btn, command=lambda x=btnIndex: self.gameInfo(x))
-                self.buttons[btn].grid(row=8 + btnIndex, columnspan=3)
-            self.btnFrame.grid()
+            if self.btnFrame:
+                self.btnFrame.grid_remove()
+                self.matchingLabel.config(text='Wrong criteria specified.')
 
 
 # Create an object of the ProgramGUI class to begin the program.

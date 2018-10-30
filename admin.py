@@ -25,7 +25,6 @@ def inputInt(prompt, errorMessage='Invalid input - Try again.', minValue=None, m
 
 
 # This function repeatedly prompts for input until something other than whitespace is entered.
-# See Point 2 of the "Functions in admin.py" section of the assignment brief.
 def inputSomething(prompt):
     while True:
         value = input(prompt).strip()
@@ -43,15 +42,11 @@ def saveData(dataList):
     with open('data.txt', 'w') as file:
         json.dump(dataList, file, indent=4, ensure_ascii=False)
 
+
 # Here is where you attempt to open data.txt and read the data into a "data" variable.
 # If the file does not exist or does not contain JSON data, set "data" to an empty list instead.
 # This is the only time that the program should need to read anything from the file.
-# See Point 1 of the "Requirements of admin.py" section of the assignment brief.
-
-
 # Print welcome message, then enter the endless loop which prompts the user for a choice.
-# See Point 2 of the "Details of admin.py" section of the assignment brief.
-# The rest is up to you.
 print('Welcome to the Game Finder Admin Program.')
 try:
     with open('data.txt') as file:
