@@ -57,13 +57,12 @@ class ProgramGUI:
 
         tkinter.mainloop()
 
-    def gameInfo(self, btn):
-        btn.lower()
-
-        for counter, game in enumerate(self.data):
-            if btn in game['name']:
-                message = '{}\n Players: {} - {}\n Duration: {}\n Minimum Age: {}'.format(game['name'], game['min_players'], game['max_players'], game['duration'], game['min_age'])
-                tkinter.messagebox.showerror(game['name'], message)
+    def gameInfo(self, btnIndex):
+        message = '{}\n Players: {} - {}\n Duration: {}\n Minimum Age: {}'.format(self.data[btnIndex]['name'], self.data[btnIndex]
+                                                                                  ['min_players'], self.data[btnIndex]['max_players'], self.data[btnIndex]['duration'], self.data[btnIndex]['min_age'])
+        tkinter.messagebox.showerror(self.data[btnIndex]['name'], message)
+        # for counter, game in enumerate(self.data):
+        #     if btn in game['name']:
 
     def findGames(self):
         # This method finds and displays games matching the criteria entered by the user.
@@ -97,9 +96,12 @@ class ProgramGUI:
                 self.btnFrame.grid_forget()
             buttonFrame = self.btnFrame = tkinter.Frame(self.main)
             buttonFrame.grid(columnspan=3)
-            for counter, btn in enumerate(gameList):
-                self.buttons[btn] = tkinter.Button(buttonFrame, text=btn, command=lambda x=btn: self.gameInfo(x))
-                self.buttons[btn].grid(row=8 + counter, columnspan=3)
+            for btnIndex, btn in enumerate(gameList):
+                for counter, game in enumerate(self.data):
+                    if btn in game['name']:
+                        btnIndex = counter
+                self.buttons[btn] = tkinter.Button(buttonFrame, text=btn, command=lambda x=btnIndex: self.gameInfo(x))
+                self.buttons[btn].grid(row=8 + btnIndex, columnspan=3)
             self.btnFrame.grid()
 
 
