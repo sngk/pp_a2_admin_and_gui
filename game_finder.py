@@ -63,7 +63,6 @@ class ProgramGUI:
     def findGames(self):
         # This method finds and displays games matching the criteria entered by the user.
         try:
-            print(self.data[0])
             youngestAge = int(self.youngestAge.get())
             timeAvail = int(self.timeAvail.get())
             playersNum = int(self.playersNum.get())
@@ -89,11 +88,6 @@ class ProgramGUI:
                 self.matchingLabel.config(text='No matching games found.')
 
         except ValueError:
-            tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
-            if self.btnFrame:
-                self.btnFrame.grid_remove()
-                self.matchingLabel.config(text='Wrong criteria specified.')
-        except IndexError:
             tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
             if self.btnFrame:
                 self.btnFrame.grid_remove()
