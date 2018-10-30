@@ -90,17 +90,17 @@ class ProgramGUI:
             tkinter.messagebox.showerror('Error!', 'Invalid criteria specified.')
 
         else:
-            # self.criteriaLabel.config(text='\n'.join(gameList))  # version of program without buttons for game info
             self.criteriaLabel.grid_remove()
+            # self.criteriaLabel.config(text='\n'.join(gameList))  # version of program without buttons for game info
             self.buttons = {}
             if self.btnFrame:  # Exists?
                 self.btnFrame.grid_forget()
-            else:
-                buttonFrame = self.btnFrame = tkinter.Frame(self.main)
-                buttonFrame.grid()
-                for counter, btn in enumerate(gameList):
-                    self.buttons[btn] = tkinter.Button(buttonFrame, text=btn, command=lambda x=btn: self.gameInfo(x))
-                    self.buttons[btn].grid(row=8 + counter, columnspan=3)
+            buttonFrame = self.btnFrame = tkinter.Frame(self.main)
+            buttonFrame.grid(columnspan=3)
+            for counter, btn in enumerate(gameList):
+                self.buttons[btn] = tkinter.Button(buttonFrame, text=btn, command=lambda x=btn: self.gameInfo(x))
+                self.buttons[btn].grid(row=8 + counter, columnspan=3)
+            self.btnFrame.grid()
 
 
 # Create an object of the ProgramGUI class to begin the program.
