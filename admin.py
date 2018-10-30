@@ -2,10 +2,6 @@
 # Student Number: 10472552
 
 
-# The "pass" command tells Python to "do nothing".  It is simply a placeholder to ensure that the starter files run smoothly.
-# They are not needed in your completed program.  Replace them with your own code as you complete the assignment.
-
-
 # Import the json module to allow us to read and write data in JSON format.
 import json
 
