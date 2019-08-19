@@ -1,5 +1,4 @@
-# Name: Andrew Udodov
-# Student Number: 10472552
+# Name: Andrew
 
 # Import the required modules.
 import tkinter
