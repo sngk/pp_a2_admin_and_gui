@@ -7,6 +7,7 @@ import json
 
 
 # This function repeatedly prompts for input until an integer is entered.
+# If the invalid input  -- displays an error and asks for another try
 def inputInt(prompt, errorMessage='Invalid input - Try again.', minValue=None, maxValue=None):
     while True:
         value = input(prompt)
@@ -25,6 +26,7 @@ def inputInt(prompt, errorMessage='Invalid input - Try again.', minValue=None, m
 
 
 # This function repeatedly prompts for input until something other than whitespace is entered.
+# If nothing entered displays an error
 def inputSomething(prompt):
     while True:
         value = input(prompt).strip()
@@ -35,7 +37,6 @@ def inputSomething(prompt):
             return value
 
 # This function opens "data.txt" in write mode and writes the data to it in JSON format.
-# See Point 3 of the "Functions in admin.py" section of the assignment brief.
 
 
 def saveData(dataList):
@@ -64,14 +65,18 @@ while True:
     if choice[0] == 'a':
         # Add a new game.
         gameName = inputSomething('Enter the game name > ')
-        nameList = []
+        nameList = []  # create an empty list to use it later for checking if game already exists
         for counter, game in enumerate(data):
             name = game['name'].lower()
             nameList.append(name)
+            # check if game exists, and displays a proper message
+            # the message contains the name of the existing game and its index
         if gameName.lower() in nameList:
             index = nameList.index(gameName.lower())
             print('The game already exists.')
             print('Index: {}; Game name: {}'.format(index, data[index]['name']))
+            # if no such game exists, asks user to provide more information about the game
+            # and saves it
         else:
             minPlayers = inputInt('Enter the minimum players for the game > ', minValue=1)
             maxPlayers = inputInt('Enter the maximum players for the game > ', minValue=minPlayers)
@@ -84,6 +89,8 @@ while True:
 
     elif choice[0] == 'l':
         # List the current games.
+        # if the data.txt file is empty displays the message that there are no games saved
+        # Otherwise, displays the game's index and name
         if not data:
             print('No Games Saved!')
         else:
@@ -93,12 +100,17 @@ while True:
 
     elif choice[0] == 's':
         # Search the current games.
+        # reads user input and based on it desides what to display
         if not data:
             print('No Games Saved!')
         else:
+            # if user input is just one character -- asks for more details like the game name to look for
             if len(choice) == 1:
                 gameName = inputSomething('Enter the name of the game you would like to look for > ').lower()
             else:
+                # if user input is more than 1 character, strips the input and search the game based on what user's entered
+                # if user's input matches the game name in data.txt displays the message that contains game name and its index
+                # if nothing found, displays the message
                 gameName = ' '.join(choice[1:]).strip().lower()
             print('Searching results: ')
             noMatches = True
@@ -112,13 +124,18 @@ while True:
 
     elif choice[0] == 'v':
         # View a game.
+        # reads user input and based on it desides what to display
         if not data:
             print('No Games Saved!')
         else:
             try:
+                # if user input is just one character -- asks for game's index to display information about the game
                 if len(choice) == 1:
                     value = inputInt('Game number (index) to view > ', minValue=0)
                 else:
+                    # if user input is more than 1 character, gets the second character (should be a number) and do the following
+                    # if index that user entered exists in data.txt, displays game information
+                    # if index is out of range or not a number, displays the error messages
                     value = int(choice[1])
                 print(data[value]['name'])
                 print('\tPlayers: {} - {}'.format(data[value]['min_players'], data[value]['max_players']))
@@ -127,7 +144,7 @@ while True:
             except ValueError:
                 print('Invalid input - Try again. Index should be integer number.')
             except IndexError:
-                print('Invalid index number - Out of range.')
+                print('Invalid index number - Out of range. There is total of {} games saved.'.format(len(data)))
 
     elif choice[0] == 'd':
         # Delete a game.
@@ -135,9 +152,13 @@ while True:
             print('No Games Saved!')
         else:
             try:
+                # if user input is just one character -- asks for game's index to delete
                 if len(choice) == 1:
                     value = inputInt('Game number (index) to delete > ', minValue=0)
                 else:
+                    # if user input is more than 1 character, gets the second character (should be a number) and do the following
+                    # if index that user entered exists in data.txt, deletes the recording
+                    # if index is out of range or not a number, displays the error messages
                     value = int(choice[1])
                 del data[value]
                 saveData(data)
@@ -149,6 +170,8 @@ while True:
 
     elif choice[0] == 'b':
         # Display breakdown
+        # the breakdown consists of:
+        # Total number of games, maximum and minimum players across all games, average duration of game, average minimum age
         if not data:
             print('No Games Saved!')
         else:
